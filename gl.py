@@ -15,21 +15,25 @@ def color(r, g, b):
 
 
 class Render(object):
-  def glInit(self, width, height):
+  def __init__(self, width, height):
     self.width = width
     self.height = height
     self.framebuffer = []
-    self.clear()
+    self.glClear()
+    self.glCreateWindow(width, height)
 
 
-  def clear(self):
+
+  def glClear(self):
     self.framebuffer = [
       [color(0, 0, 0) for x in range(self.width)]
       for y in range(self.height)
     ]
 
+  def glInit():
+    pass
 
-  def write(self, filename):
+  def glFinish(self, filename):
     f = open(filename, 'bw')
 
     #file header
@@ -44,8 +48,8 @@ class Render(object):
     f.write(dword(40))
     f.write(dword(self.width))
     f.write(dword(self.height))
-    f.write(dword(1))
-    f.write(dword(24))
+    f.write(word(1))
+    f.write(word(24))
     f.write(dword(0))
     f.write(dword(self.width * self.height * 3))
     f.write(dword(0))
@@ -57,15 +61,31 @@ class Render(object):
     # pixel data
     for x in range(self.width):
       for y in range(self.height):
-        f.write(self.framebuffer[y][x])
+        f.write(self.framebuffer[x][y])
 
 
     f.close()
 
   def point(self, x, y):
-    self.framebuffer[x][y] = color(123, 123, 123)
+    self.framebuffer[x][y] = color(40, 100, 40)
 
-bitmap = Render(1000, 1000)
+  def glCreateWindow(self, width, height):
+    self.width = width
+    self.height = height
+
+  def glViewPort(self, x, y, width, height):
+    self.x = x
+    self.y = y
+    self.width = width
+    self.height = height
+
+  def glClearColor(self, r, g, b):
+    self.r = r
+    self.g = g
+    self.b = b
+
+
+bitmap = Render(800, 800)
 bitmap.point(2, 3)
 bitmap.point(5, 5)
-bitmap.write('out.bmp')
+bitmap.glFinish('out.bmp')
