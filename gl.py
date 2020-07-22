@@ -15,23 +15,8 @@ def color(r, g, b):
 
 
 class Render(object):
-  def __init__(self, width, height):
-    self.width = width
-    self.height = height
+  def __init__(self):
     self.framebuffer = []
-    self.glClear()
-    self.glCreateWindow(width, height)
-
-
-
-  def glClear(self):
-    self.framebuffer = [
-      [color(0, 0, 0) for x in range(self.width)]
-      for y in range(self.height)
-    ]
-
-  def glInit():
-    pass
 
   def glFinish(self, filename):
     f = open(filename, 'bw')
@@ -66,26 +51,59 @@ class Render(object):
 
     f.close()
 
-  def point(self, x, y):
-    self.framebuffer[x][y] = color(40, 100, 40)
+  def glInit(self):
+    pass
 
   def glCreateWindow(self, width, height):
     self.width = width
     self.height = height
 
   def glViewPort(self, x, y, width, height):
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
+    self.xVPort = x
+    self.yVPort = y
+    self.widthVPort = width
+    self.heightVPort = height
+
+  def glClear(self):
+    self.framebuffer = [
+      [color(0, 0, 0) for x in range(self.width)]
+      for y in range(self.height)
+    ]
 
   def glClearColor(self, r, g, b):
-    self.r = r
-    self.g = g
-    self.b = b
+    red = round(r * 255)
+    green = round(g * 255)
+    blue = round(b * 255)
+    self.background = color(red, green, blue)
+
+  def glVertex(self, x, y):
+    xVertex = round(((x + 1) * (self.widthVPort/2)) + self.xVPort)
+    yVertex = round(((y + 1) * (self.heightVPort/2)) + self.yVPort)
+    self.framebuffer[xVertex][yVertex] = self.foreground
+
+  def glColor(self, r=2, g=2, b=2):
+    red = round(r * 255)
+    green = round(g * 255)
+    blue = round(b * 255)
+    # imitamos la funcion color
+    self.foreground = color(red, green, blue)
 
 
-bitmap = Render(800, 800)
-bitmap.point(2, 3)
-bitmap.point(5, 5)
+  def point(self, x, y):
+    self.framebuffer[x][y] = color(150, 75, 150)
+
+
+bitmap = Render()
+
+bitmap.glCreateWindow(200, 200)
+bitmap.glClear()
+bitmap.glClearColor(0, 0, 0)
+bitmap.glColor(0.1, 1, 0.1)
+bitmap.glViewPort(100, 100, 100, 100)
+bitmap.glVertex(0,0)
+
+
+
+# bitmap.point(2, 3)
+# bitmap.point(5, 5)
 bitmap.glFinish('out.bmp')
