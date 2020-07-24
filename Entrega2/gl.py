@@ -93,6 +93,40 @@ class Render(object):
     self.framebuffer[x][y] = color(150, 75, 150)
 
 
+  # segunda entrega
+  def line(self, x1, y1, x2, y2):
+    dy = abs(y2 - y1)
+    dx = abs(x2 - x1)
+
+    steep = dy > dx
+    
+    if steep: 
+      x1, y1 = y1, x1
+      x2, y2 = y2, x2
+
+    if x1 > x2:
+      x1, y1 = y1, x1
+      x2, y2 = y2, x2
+
+    dy = y2 - y1
+    dx = x2 - x1
+
+    offset = 0
+    threshold = dx
+
+    y = y1
+    for x in range(x1, x2):
+      if steep:
+        bitmap.point(y, x)
+      else:
+        bitmap.point(x, y)
+
+      offset += dy * 2
+      if offset >= threshold:
+        y += 1 if y1 < y2 else -1
+        threshold += 2 * dx
+
+    
 bitmap = Render()
 
 bitmap.glCreateWindow(200, 200)
@@ -102,8 +136,7 @@ bitmap.glColor(0.1, 1, 0.1)
 bitmap.glViewPort(100, 100, 100, 100)
 bitmap.glVertex(0,0)
 
+bitmap.line(10, 100, 30, 10)
 
 
-# bitmap.point(2, 3)
-# bitmap.point(5, 5)
 bitmap.glFinish('out.bmp')
