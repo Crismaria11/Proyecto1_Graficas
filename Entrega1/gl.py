@@ -101,8 +101,4 @@ bitmap.glColor(1, 0.2, 1)
 bitmap.glViewPort(50, 50, 50, 50)
 bitmap.glVertex(0,0)
 
-
-
-# bitmap.point(2, 3)
-# bitmap.point(5, 5)
 bitmap.glFinish('out.bmp')

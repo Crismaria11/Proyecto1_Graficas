@@ -166,8 +166,9 @@ bitmap.glViewPort(100, 100, 100, 100)
 
 # bitmap.line(10, 100, 30, 10)
 
-bitmap.load('./Modelos/baby-yoda-phone-stand/baby-yoda-phone-stand.obj', translate=[300, 100], scale=[3,3])
+# bitmap.load('./Modelos/baby-yoda-phone-stand/baby-yoda-phone-stand.obj', translate=[300, 100], scale=[3,3])
 # bitmap.load('./Modelos/tigre_sumatra_sketchfab.obj', translate=[300, 300], scale=[500,500])
+bitmap.load('./Modelos/BabyYoda.obj', translate=[300, 300], scale=[150,150])
 
 
 bitmap.glFinish('out.bmp')

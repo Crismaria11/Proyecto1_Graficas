@@ -51,7 +51,7 @@ class Render(object):
     # pixel data
     for x in range(self.width):
       for y in range(self.height):
-        f.write(self.framebuffer[x][y])
+        f.write(self.framebuffer[y][x])
 
 
     f.close()
@@ -76,26 +76,25 @@ class Render(object):
     ]
 
   def glClearColor(self, r, g, b):
-    red = round(r * 255)
-    green = round(g * 255)
-    blue = round(b * 255)
-    self.background = color(red, green, blue)
+    self.framebuffer = [
+      [color(round(r * 255), round(g * 255), round(b * 255)) for x in range(self.width)]
+      for y in range(self.height)
+    ]
 
   def glVertex(self, x, y):
     xVertex = round(((x + 1) * (self.widthVPort/2)) + self.xVPort)
     yVertex = round(((y + 1) * (self.heightVPort/2)) + self.yVPort)
     self.framebuffer[xVertex][yVertex] = self.foreground
 
-  def glColor(self, r=2, g=2, b=2):
+  def glColor(self, r, g, b):
     red = round(r * 255)
     green = round(g * 255)
     blue = round(b * 255)
-    # imitamos la funcion color
     self.foreground = color(red, green, blue)
 
 
   def point(self, x, y):
-    self.framebuffer[x][y] = color(150, 75, 150)
+    self.framebuffer[y][x] = self.foreground
 
 
   # segunda entrega
@@ -131,10 +130,7 @@ class Render(object):
         y += 1 if y1 < y2 else -1
         threshold += 2 * dx
 
-  def triangle(self, A, B, C):
-    print('A', A)
-    print('B', B)
-    print('C', C)
+  
 
 
   
@@ -142,16 +138,12 @@ class Render(object):
     
 bitmap = Render()
 
-bitmap.triangle()
-
-bitmap.glCreateWindow(200, 200)
+bitmap.glCreateWindow(200, 100)
 bitmap.glClear()
-bitmap.glClearColor(0, 0, 0)
-bitmap.glColor(0.1, 1, 0.1)
-bitmap.glViewPort(100, 100, 100, 100)
-bitmap.glVertex(0,0)
+bitmap.glClearColor(0.1, 0.3, 0.8)
+bitmap.glColor(1, 0.2, 1)
+bitmap.glViewPort(50, 50, 50, 50)
 
-bitmap.line(10, 100, 30, 10)
-
+bitmap.line(50, 100, 99, 50)
 
 bitmap.glFinish('out.bmp')
