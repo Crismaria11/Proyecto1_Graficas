@@ -98,7 +98,12 @@ class Render(object):
 
 
   # segunda entrega
-  def line(self, x1, y1, x2, y2):
+  def glLine(self, x1, y1, x2, y2):
+    x1 = round(((x1 + 1) * (self.widthVPort/2)) + self.xVPort)
+    x2 = round(((x2 + 1) * (self.widthVPort/2)) + self.xVPort)
+    y1 = round(((y1 + 1) * (self.heightVPort/2)) + self.yVPort)
+    y2 = round(((y2 + 1) * (self.heightVPort/2)) + self.yVPort)
+
     dy = abs(y2 - y1)
     dx = abs(x2 - x1)
 
@@ -109,11 +114,11 @@ class Render(object):
       x2, y2 = y2, x2
 
     if x1 > x2:
-      x1, y1 = y1, x1
-      x2, y2 = y2, x2
+      x1, x2 = x2, x1
+      y1, y2 = y2, y1
 
-    dy = y2 - y1
-    dx = x2 - x1
+    dy = abs(y2 - y1)
+    dx = abs(x2 - x1)
 
     offset = 0
     threshold = dx
@@ -121,9 +126,9 @@ class Render(object):
     y = y1
     for x in range(x1, x2):
       if steep:
-        bitmap.point(y, x)
+        self.point(y, x)
       else:
-        bitmap.point(x, y)
+        self.point(x, y)
 
       offset += dy * 2
       if offset >= threshold:
@@ -142,8 +147,9 @@ bitmap.glCreateWindow(200, 100)
 bitmap.glClear()
 bitmap.glClearColor(0.1, 0.3, 0.8)
 bitmap.glColor(1, 0.2, 1)
-bitmap.glViewPort(50, 50, 50, 50)
+bitmap.glViewPort(50, 0, 50, 30)
+# bitmap.glVertex(0,0)
 
-bitmap.line(50, 100, 99, 50)
+bitmap.glLine(0.25, 0.9, 0.25, -1)
 
 bitmap.glFinish('out.bmp')

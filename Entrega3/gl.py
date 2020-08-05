@@ -98,7 +98,8 @@ class Render(object):
 
 
   # segunda entrega
-  def line(self, x1, y1, x2, y2):
+  def glLine(self, x1, y1, x2, y2):
+    
     dy = abs(y2 - y1)
     dx = abs(x2 - x1)
 
@@ -148,7 +149,7 @@ class Render(object):
         y2 = round((vertice2[1] * scale[1]) + translate[1])
       
 
-        self.line(x1, y1, x2, y2)
+        self.glLine(x1, y1, x2, y2)
 
 
 
@@ -157,18 +158,18 @@ class Render(object):
 bitmap = Render()
 
 # tonos excelentes para baby yoda
-bitmap.glCreateWindow(600,600)
+bitmap.glCreateWindow(2000, 2000)
 bitmap.glClear()
 bitmap.glClearColor(0, 0, 0)
 bitmap.glColor(0.1, 1, 0.1)
-bitmap.glViewPort(100, 100, 100, 100)
+bitmap.glViewPort(0, 0, 100, 100)
 # bitmap.glVertex(0,0)
 
 # bitmap.line(10, 100, 30, 10)
 
 # bitmap.load('./Modelos/baby-yoda-phone-stand/baby-yoda-phone-stand.obj', translate=[300, 100], scale=[3,3])
 # bitmap.load('./Modelos/tigre_sumatra_sketchfab.obj', translate=[300, 300], scale=[500,500])
-bitmap.load('./Modelos/BabyYoda.obj', translate=[300, 300], scale=[150,150])
+bitmap.load('./Modelos/BabyYoda.obj', translate=[1000, 1000], scale=[400,400])
 
 
 bitmap.glFinish('out.bmp')
