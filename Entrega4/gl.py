@@ -211,34 +211,34 @@ class Render(object):
     light = Vertex3(0, 0, 1)
     for face in model.faces:
       vcount = len(face)
-
-      vertices = []
-
-      for j in range(vcount):
-        vertexIndex1 = face[j][0] - 1
-        vertexIndex2 = face[(j + 1) % vcount][0] - 1
-
-        vertice1 = model.vertices[vertexIndex1]
-        vertice2 = model.vertices[vertexIndex2]
-
-        x1 = round((vertice1[0] * scale[0]) + translate[0])
-        y1 = round((vertice1[1] * scale[1]) + translate[1])
-        z1 = round((vertice1[2] * scale[2]) + translate[2])
-        x2 = round((vertice2[0] * scale[0]) + translate[0])
-        y2 = round((vertice2[1] * scale[1]) + translate[1])
-        z2 = round((vertice2[2] * scale[2]) + translate[2])
-
-        # self.glLine(Vertex2(x1, y1), Vertex2(x2, y2))
-
-        vertices.append(Vertex3(x1, y1, z1))
       
       if vcount == 3:
-        A = vertices[0]
-        B = vertices[1]
-        C = vertices[2]
+        f1 = face[0][0] - 1
+        f2 = face[1][0] - 1
+        f3 = face[2][0] - 1
 
-        normal = norm(cross(sub(B, A), sub(C, A)))
-        intensity = dot(normal, light)
+        v1 = Vertex3(model.vertices[f1][0], model.vertices[f1][1], model.vertices[f1][2])
+        v2 = Vertex3(model.vertices[f2][0], model.vertices[f2][1], model.vertices[f2][2])
+        v3 = Vertex3(model.vertices[f3][0], model.vertices[f3][1], model.vertices[f3][2])
+
+        x1 = round((v1.x * scale[0]) + translate[0])
+        y1 = round((v1.y * scale[1]) + translate[1])
+        z1 = round((v1.z * scale[2]) + translate[2])
+
+        x2 = round((v2.x * scale[0]) + translate[0])
+        y2 = round((v2.y * scale[1]) + translate[1])
+        z2 = round((v2.z * scale[2]) + translate[2])
+
+        x3 = round((v3.x * scale[0]) + translate[0])
+        y3 = round((v3.y * scale[1]) + translate[1])
+        z3 = round((v3.z * scale[2]) + translate[2])
+
+        A = Vertex3(x1, y1, z1)
+        B = Vertex3(x2, y2, z2)
+        C = Vertex3(x3, y3, z3)
+
+        normal = cross(sub(B, A), sub(C, A))
+        intensity = dot(norm(normal), light)
         grey = round(255 * intensity)
         if grey < 0:
           continue
@@ -246,14 +246,50 @@ class Render(object):
         self.triangle(A, B, C, intensity_color)
 
       if vcount == 4:
-        A = vertices[0]
-        B = vertices[1]
-        C = vertices[2]
-        D = vertices[3]
-      
-        self.triangle(A, B, C, color(0, 244, 0))
-        self.triangle(A, D, C, color(244, 0, 0))
+        f1 = face[0][0] - 1
+        f2 = face[1][0] - 1
+        f3 = face[2][0] - 1
+        f4 = face[3][0] - 1
 
+        v1 = Vertex3(model.vertices[f1][0], model.vertices[f1][1], model.vertices[f1][2])
+        v2 = Vertex3(model.vertices[f2][0], model.vertices[f2][1], model.vertices[f2][2])
+        v3 = Vertex3(model.vertices[f3][0], model.vertices[f3][1], model.vertices[f3][2])
+        v4 = Vertex3(model.vertices[f4][0], model.vertices[f4][1], model.vertices[f4][2])
+
+        x1 = round((v1.x * scale[0]) + translate[0])
+        y1 = round((v1.y * scale[1]) + translate[1])
+        z1 = round((v1.z * scale[2]) + translate[2])
+
+        x2 = round((v2.x * scale[0]) + translate[0])
+        y2 = round((v2.y * scale[1]) + translate[1])
+        z2 = round((v2.z * scale[2]) + translate[2])
+
+        x3 = round((v3.x * scale[0]) + translate[0])
+        y3 = round((v3.y * scale[1]) + translate[1])
+        z3 = round((v3.z * scale[2]) + translate[2])
+
+        x4 = round((v4.x * scale[0]) + translate[0])
+        y4 = round((v4.y * scale[1]) + translate[1])
+        z4 = round((v4.z * scale[2]) + translate[2])
+
+        A = Vertex3(x1, y1, z1)
+        B = Vertex3(x2, y2, z2)
+        C = Vertex3(x3, y3, z3)
+        D = Vertex3(x4, y4, z4)
+
+        normal = cross(sub(B, A), sub(C, A))
+        intensity = dot(norm(normal), light)
+        grey = round(255 * intensity)
+        if grey < 0:
+          continue
+        intensity_color = color(grey, grey, grey)
+
+        # A, B, C, D = vertices
+        
+        self.triangle(A, B, C, intensity_color)
+        self.triangle(A, C, D, intensity_color)
+      
+        
   
   # parte opcional
   def triangleInicial(self, A, B, C, color = (0, 244, 0)):
@@ -321,11 +357,14 @@ class Render(object):
 
         z = A.z * w + B.z * v + C.z * u
 
-        if z > self.zbuffer[x][y]:
-          self.point(x, y, color)
-          self.zbuffer[x][y] = z 
+        try:
+          if z > self.zbuffer[x][y]:
+            self.point(x, y, color)
+            self.zbuffer[x][y] = z 
+        except:
+          pass
 
-  def transform(self, vertex, translate, scale):
+  def transform(self, vertex, translate=(0, 0, 0), scale=(1, 1, 1)):
     return Vertex3(
       round((vertex[0] + translate[0]) * scale[0]),
       round((vertex[1] + translate[1]) * scale[1]),
@@ -344,17 +383,9 @@ bitmap.glViewPort(0, 0, 100, 100)
 
 # bitmap.line(10, 100, 30, 10)
 
-# bitmap.load('./Modelos/tigre_sumatra_sketchfab.obj', translate=[400, 400], scale=[1500,1500])
-# bitmap.load('./Modelos/BabyYoda.obj', translate=[1000, 1000], scale=[400,400])
-bitmap.load('./Modelos/face.obj', translate=[100, 100], scale=[10,10])
-
-
-# triangle tries
-# bitmap.triangle(Vertex2(10, 70), Vertex2(50, 160), Vertex2(70, 80), color(244, 0, 0))
-# bitmap.triangle(Vertex2(180, 50), Vertex2(150, 1), Vertex2(70, 180), color(0, 244, 0))
-# bitmap.triangle(Vertex2(180, 150), Vertex2(120, 160), Vertex2(130, 180), color(0, 0, 244))
-
-# para esta entrega estas son las buenas medidas
-# bitmap.load('./Modelos/BabyYoda.obj', translate=[400, 400], scale=[200, 200])
+# bitmap.load('./Modelos/0.obj', translate=[400, 200, 200], scale=[300, 300, 300])
+bitmap.load('./Modelos/BabyYoda.obj', translate=[400, 400, 400], scale=[200, 200, 200])
+# bitmap.load('./Modelos/ig11.obj', translate=[400, 150, 100], scale=[300, 300, 300])
+# bitmap.load('./Modelos/face.obj', translate=[400, 300, 30], scale=[10, 10, 10])
 
 bitmap.glFinish('out.bmp')
