@@ -110,9 +110,6 @@ def word(w):
 def dword(d):
   return struct.pack('=l', d)
 
-def color(r, g, b):
-  return bytes([b, g, r])
-
 class Render(object):
   def __init__(self, width, height):
     self.width = width

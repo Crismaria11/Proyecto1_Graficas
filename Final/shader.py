@@ -1,5 +1,5 @@
 from gl import *
-from utils import *
+from obj import *
 
 def sombra(render, **kwargs):
   w, v, u = kwargs['bar']
